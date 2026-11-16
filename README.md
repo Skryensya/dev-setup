@@ -17,7 +17,7 @@ A progress bar stays at the bottom of the terminal while logs scroll above it.
 | Node | nvm (and Node LTS if none), pnpm, [ni](https://github.com/antfu-collective/ni) |
 | Terminal | Ghostty, zellij (with my config), yazi, neovim, zoxide, eza |
 | Dev | gh, Docker Desktop |
-| AI | Claude Code, [pi](https://github.com/earendil-works/pi), the `minecraft-hud` Claude Code mod |
+| AI | Claude Code, [pi](https://github.com/earendil-works/pi), the `usage-hud` Claude Code mod |
 | Skills | [skills.sh](https://skills.sh) packages from `emilkowalski/skills` and `mattpocock/skills` |
 
 ## Notes
@@ -33,5 +33,5 @@ A progress bar stays at the bottom of the terminal while logs scroll above it.
 ```
 install.sh                 the installer
 config/zellij/config.kdl   zellij config
-mods/minecraft-hud/        Claude Code HUD mod
+mods/usage-hud/            Claude Code HUD mod
 ```

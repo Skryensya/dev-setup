@@ -1,1 +1,0 @@
-{ "name": "minecraft-hud", "version": "0.4.7", "description": "Minecraft HUD above the prompt: hearts for the weekly limit, hunger for the 5-hour limit, the experience bar for the context window", "types": "./types/index.d.ts" }

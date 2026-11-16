@@ -80,13 +80,13 @@ export PATH="$HOME/.local/bin:$PATH"
 log "pi agent"
 if have pi; then skip pi; else npm install -g @earendil-works/pi-coding-agent; fi
 
-log "Mod minecraft-hud"
-mod="$HOME/.claude/mods/minecraft-hud"
+log "Mod usage-hud"
+mod="$HOME/.claude/mods/usage-hud"
 plugins=$(claude plugin list 2>/dev/null || true)
-if grep -q 'minecraft-hud@' <<<"$plugins"; then skip minecraft-hud; else
-  mkdir -p "$mod" && cp -R "$DIR/mods/minecraft-hud/." "$mod/"
+if grep -q 'usage-hud@' <<<"$plugins"; then skip usage-hud; else
+  mkdir -p "$mod" && cp -R "$DIR/mods/usage-hud/." "$mod/"
   claude plugin marketplace add "$mod"
-  claude plugin install minecraft-hud@allison-mods
+  claude plugin install usage-hud@allison-mods
 fi
 
 log "gh";     brew_pkg gh

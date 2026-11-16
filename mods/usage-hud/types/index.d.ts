@@ -12,6 +12,6 @@ export type Limits = {
 declare module 'claude-code' {
   interface PluginState {
     /** `context`: percent of the session's context window in use, 0 to 100. */
-    'minecraft-hud': { limits: Limits | null; context: number | null }
+    'usage-hud': { limits: Limits | null; context: number | null }
   }
 }

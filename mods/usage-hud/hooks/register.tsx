@@ -13,8 +13,8 @@ import {
 } from './sprites'
 import type { Sprite } from './sprites'
 
-const limits = atom({ plugin: 'minecraft-hud', key: 'limits' } as const, null)
-const context = atom({ plugin: 'minecraft-hud', key: 'context' } as const, null)
+const limits = atom({ plugin: 'usage-hud', key: 'limits' } as const, null)
+const context = atom({ plugin: 'usage-hud', key: 'context' } as const, null)
 
 // The store key holding the last rate-limit reading, kept across sessions.
 const LAST = 'lastLimits'
@@ -297,7 +297,7 @@ export const register: Register = on => {
           </Text>
         ))
       return (
-        <Box key="minecraft" width="100%" flexDirection="column">
+        <Box key="usage" width="100%" flexDirection="column">
           {hud}
           <Box key="xp" width="100%" flexDirection="row">
             {line(0, start, 'l')}

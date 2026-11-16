@@ -63,7 +63,7 @@ test('a narrow band stacks the bars, hunger drawn like the hearts', async ($, on
     ],
     changed: ['rateLimits'],
   })
-  const terminal = await $.ui.mount({ plugin: 'minecraft-hud', surface: 'terminal', ...BAND })
+  const terminal = await $.ui.mount({ plugin: 'usage-hud', surface: 'terminal', ...BAND })
   expect((await terminal.find({ key: 'hud' }))?.props.flexDirection).toBe('row')
   expect((await terminal.find({ key: 'hunger' }))?.props.alignItems).toBe('flex-end')
   expect(await terminal.find({ type: 'Text', text: '40% ' })).toBeDefined()
@@ -87,12 +87,12 @@ test('the band draws braille and percents in Zed and a picture on desktop', asyn
     ],
     changed: ['rateLimits'],
   })
-  const terminal = await $.ui.mount({ plugin: 'minecraft-hud', surface: 'terminal', ...BAND })
+  const terminal = await $.ui.mount({ plugin: 'usage-hud', surface: 'terminal', ...BAND })
   expect(await terminal.find({ type: 'Text', text: ' 70%' })).toBeDefined()
   expect(await terminal.find({ type: 'Text', text: '⣿⣿⣿⣿⣿⣿⣿' })).toBeDefined()
   expect(await terminal.find({ type: 'Text', text: '40% ' })).toBeDefined()
   await terminal.unmount()
-  const desktop = await $.ui.mount({ plugin: 'minecraft-hud', surface: 'desktop', ...BAND })
+  const desktop = await $.ui.mount({ plugin: 'usage-hud', surface: 'desktop', ...BAND })
   expect(await desktop.find({ type: 'Svg' })).toBeDefined()
   await desktop.unmount()
 })
@@ -107,7 +107,7 @@ test('Ghostty draws braille too, no images', async ($, on) => {
     rateLimits: [{ kind: 'seven_day', percentUsed: 10 }],
     changed: ['rateLimits'],
   })
-  const terminal = await $.ui.mount({ plugin: 'minecraft-hud', surface: 'terminal', ...BAND })
+  const terminal = await $.ui.mount({ plugin: 'usage-hud', surface: 'terminal', ...BAND })
   expect(await terminal.find({ type: 'Image' })).toBeUndefined()
   expect(await terminal.find({ type: 'Text', text: '⣿'.repeat(9) })).toBeDefined()
   expect(await terminal.find({ type: 'Text', text: ' 90%' })).toBeDefined()
@@ -126,7 +126,7 @@ test('the experience bar fills with the context in use', async ($, on) => {
     rateLimits: [{ kind: 'seven_day', percentUsed: 30 }],
     changed: ['context', 'rateLimits'],
   })
-  const terminal = await $.ui.mount({ plugin: 'minecraft-hud', surface: 'terminal', ...BAND, props: { ...BAND.props, bodyColumns: 40 } })
+  const terminal = await $.ui.mount({ plugin: 'usage-hud', surface: 'terminal', ...BAND, props: { ...BAND.props, bodyColumns: 40 } })
   // 40 columns: 17 of line, ' 25% ', 18 of line; the first 10 green
   expect(await terminal.find({ type: 'Text', text: ' 25% ' })).toBeDefined()
   expect(await terminal.find({ type: 'Text', text: '⠶'.repeat(10) })).toBeDefined()
@@ -148,7 +148,7 @@ test('a new session shows the experience bar empty until the first fill', async 
     rateLimits: [{ kind: 'seven_day', percentUsed: 10 }],
     changed: ['rateLimits'],
   })
-  const terminal = await $.ui.mount({ plugin: 'minecraft-hud', surface: 'terminal', ...BAND })
+  const terminal = await $.ui.mount({ plugin: 'usage-hud', surface: 'terminal', ...BAND })
   expect(await terminal.find({ type: 'Text', text: ' 0% ' })).toBeDefined()
   await terminal.unmount()
 })
@@ -160,7 +160,7 @@ test('a new session draws the last reading kept, before its first response', asy
   mock.store(on, { lastLimits: { weekly: 30, hourly: 60, weeklyResets: null, hourlyResets: null } })
   mock.env(on, { TERM_PROGRAM: 'zed' })
   await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
-  const terminal = await $.ui.mount({ plugin: 'minecraft-hud', surface: 'terminal', ...BAND })
+  const terminal = await $.ui.mount({ plugin: 'usage-hud', surface: 'terminal', ...BAND })
   expect(await terminal.find({ key: 'hud' })).toBeDefined()
   expect(await terminal.find({ type: 'Text', text: '40% ' })).toBeDefined()
   await terminal.unmount()
@@ -189,7 +189,7 @@ test('a /clear keeps the HUD, with the last reading, until the first response', 
     changed: ['rateLimits'],
   })
   await $.session.measure({ context: { window: 200000 }, rateLimits: [], changed: ['rateLimits', 'context'] })
-  const terminal = await $.ui.mount({ plugin: 'minecraft-hud', surface: 'terminal', ...BAND })
+  const terminal = await $.ui.mount({ plugin: 'usage-hud', surface: 'terminal', ...BAND })
   expect(await terminal.find({ key: 'hud' })).toBeDefined()
   expect(await terminal.find({ type: 'Text', text: '40% ' })).toBeDefined()
   await terminal.unmount()
