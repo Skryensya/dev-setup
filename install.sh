@@ -89,6 +89,8 @@ if grep -q 'minecraft-hud@' <<<"$plugins"; then skip minecraft-hud; else
   claude plugin install minecraft-hud@allison-mods
 fi
 
+log "gh";     brew_pkg gh
+
 log "yazi";   brew_pkg yazi
 
 log "neovim"; brew_pkg neovim nvim
