@@ -1,0 +1,5 @@
+{
+  "name": "allison-mods",
+  "owner": { "name": "Allison Peña" },
+  "plugins": [{ "name": "minecraft-hud", "source": "./" }]
+}
