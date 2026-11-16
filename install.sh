@@ -118,6 +118,26 @@ if grep -q '# dev-setup: nvim' "$HOME/.zshrc" 2>/dev/null; then skip "alias vim"
   printf "\n# dev-setup: nvim\nalias vim='nvim'\n" >> "$HOME/.zshrc"
 fi
 
+# skills.sh (CLI de Vercel, se corre con npx): solo instala las que falten.
+skill_add() { # skill_add <repo> <skill>...
+  local repo=$1 skill missing=()
+  shift
+  for skill in "$@"; do [ -e "$HOME/.claude/skills/$skill" ] || missing+=("$skill"); done
+  if [ ${#missing[@]} -eq 0 ]; then skip "$repo"; else
+    npx -y skills add "$repo" -g -y -a claude-code -s "${missing[@]}"
+  fi
+}
+
+log "Skills: emilkowalski"
+skill_add emilkowalski/skills animate apple-design break-ui emil-design-eng \
+  find-animation-opportunities improve-animations mobile-native pick-ui-library \
+  prototype review-animations
+
+log "Skills: mattpocock (planificación y git)"
+skill_add mattpocock/skills grill-me grill-with-docs grilling to-spec to-tickets \
+  to-questionnaire wayfinder wizard retro teach wait-what \
+  git-guardrails-claude-code setup-pre-commit setup-ts-deep-modules setup-matt-pocock-skills
+
 log "Config de zellij"
 dest="$HOME/.config/zellij/config.kdl"
 mkdir -p "$(dirname "$dest")"
