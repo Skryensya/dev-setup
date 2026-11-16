@@ -17,7 +17,7 @@ A progress bar stays at the bottom of the terminal while logs scroll above it.
 | Node | nvm (and Node LTS if none), pnpm, [ni](https://github.com/antfu-collective/ni) |
 | Terminal | Ghostty, zellij (with my config), yazi, neovim, zoxide, eza |
 | Dev | gh, Docker Desktop |
-| AI | Claude Code, [pi](https://github.com/earendil-works/pi), the `usage-hud` Claude Code mod |
+| AI | Claude Code, [pi](https://github.com/earendil-works/pi), the `usage-hud` Claude Code mod, pi extensions (`usage-hud` HUD, `search-browser`: `web_search` through SearXNG in Docker) |
 | Skills | [skills.sh](https://skills.sh) packages from `emilkowalski/skills` and `mattpocock/skills` |
 
 ## Notes
@@ -25,6 +25,7 @@ A progress bar stays at the bottom of the terminal while logs scroll above it.
 - **Xcode tools:** if missing, the script opens macOS's installer and exits. Rerun it when that finishes.
 - **Shell:** adds `cd` → zoxide, `ls` → eza and `vim` → nvim to `~/.zshrc`. Only interactive shells are affected, scripts keep the normal commands. Open a new terminal to load them.
 - **zellij config:** copied to `~/.config/zellij/config.kdl`; an existing different file is saved as `config.kdl.bak`.
+- **pi search:** `web_search` starts the SearXNG container (`127.0.0.1:8888`) on first use, so Docker Desktop must be running. `/search-browser-up` and `/search-browser-down` control it.
 - **GitHub:** run `gh auth login` yourself afterwards.
 - **Adding a tool:** one line, `brew_pkg <name>` (or `brew_pkg <formula> <binary>` when they differ) in `install.sh`.
 
@@ -34,4 +35,5 @@ A progress bar stays at the bottom of the terminal while logs scroll above it.
 install.sh                 the installer
 config/zellij/config.kdl   zellij config
 mods/usage-hud/            Claude Code HUD mod
+pi/extensions/             pi extensions (usage-hud, search-browser)
 ```

@@ -128,6 +128,13 @@ skill_add() { # skill_add <repo> <skill>...
   fi
 }
 
+# Extensiones de pi: usage-hud (HUD de contexto) y search-browser (web_search con SearXNG en Docker).
+log "pi extensions"
+for ext in "$DIR"/pi/extensions/*/; do
+  name=$(basename "$ext"); dest="$HOME/.pi/agent/extensions/$name"
+  if [ -e "$dest" ]; then skip "pi/$name"; else mkdir -p "$dest" && cp -R "$ext." "$dest/"; fi
+done
+
 log "Skills: emilkowalski"
 skill_add emilkowalski/skills animate apple-design break-ui emil-design-eng \
   find-animation-opportunities improve-animations mobile-native pick-ui-library \
