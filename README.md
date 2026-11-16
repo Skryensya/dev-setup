@@ -23,7 +23,7 @@ A progress bar stays at the bottom of the terminal while logs scroll above it.
 ## Notes
 
 - **Xcode tools:** if missing, the script opens macOS's installer and exits. Rerun it when that finishes.
-- **Shell:** fish becomes the default shell (asks for your password once). `~/.config/fish/config.fish` gets `cd` → zoxide, `ls` → eza and `vim` → nvim, interactive sessions only; scripts keep the normal commands. Your old `~/.zshrc` is left alone. Open a new terminal to load it.
+- **Shell:** fish becomes the default shell (asks for your password once). `config/fish/conf.d/dev-setup.fish` is copied to `~/.config/fish/conf.d/`: PATH, `cd` → zoxide, `ls` → eza, `vim` → nvim, `ze` → zellij and a few more aliases, interactive sessions only; scripts keep the normal commands. Put machine-specific or private aliases in `~/.config/fish/conf.d/local.fish`, which is not in the repo. Your old `~/.zshrc` is left alone. Open a new terminal to load it.
 - **zellij config:** copied to `~/.config/zellij/config.kdl`; an existing different file is saved as `config.kdl.bak`.
 - **pi search:** `web_search` starts the SearXNG container (`127.0.0.1:8888`) on first use, so Docker Desktop must be running. `/search-browser-up` and `/search-browser-down` control it.
 - **GitHub:** run `gh auth login` yourself afterwards.
@@ -34,6 +34,7 @@ A progress bar stays at the bottom of the terminal while logs scroll above it.
 ```
 install.sh                 the installer
 config/zellij/config.kdl   zellij config
+config/fish/conf.d/        fish config (PATH, aliases)
 mods/usage-hud/            Claude Code HUD mod
 pi/extensions/             pi extensions (usage-hud, search-browser)
 ```

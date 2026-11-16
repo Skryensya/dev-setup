@@ -96,19 +96,11 @@ log "neovim"; brew_pkg neovim nvim
 log "zoxide + eza";  brew_pkg zoxide; brew_pkg eza
 
 log "Shell: config de fish"
-# config.fish: el guard is-interactive deja los scripts con cd/ls normales.
-conf="$HOME/.config/fish/config.fish"
-mkdir -p "$(dirname "$conf")"
-if grep -q '# dev-setup' "$conf" 2>/dev/null; then skip "config.fish"; else
-  cat >> "$conf" <<'EOF'
-
-# dev-setup
-if status is-interactive
-    zoxide init fish --cmd cd | source
-    alias ls eza
-    alias vim nvim
-end
-EOF
+# conf.d lo carga fish solo; los alias van tras is-interactive, así los scripts usan cd/ls normales.
+dest="$HOME/.config/fish/conf.d/dev-setup.fish"
+mkdir -p "$(dirname "$dest")"
+if cmp -s "$DIR/config/fish/conf.d/dev-setup.fish" "$dest" 2>/dev/null; then skip "config fish"; else
+  cp "$DIR/config/fish/conf.d/dev-setup.fish" "$dest"
 fi
 
 log "Docker"
