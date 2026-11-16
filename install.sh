@@ -144,9 +144,18 @@ if cmp -s "$DIR/config/zellij/config.kdl" "$dest" 2>/dev/null; then skip "config
 fi
 
 log "Shell por defecto: fish"
+SHELL_HINT=""
 if [ "$SHELL" = "$FISH" ]; then skip "fish por defecto"; else
-  grep -qx "$FISH" /etc/shells || echo "$FISH" | sudo tee -a /etc/shells >/dev/null
-  chsh -s "$FISH"
+  # sudo y chsh piden contraseña: sin terminal interactiva fallan, y ahí solo se avisa.
+  if { grep -qx "$FISH" /etc/shells || echo "$FISH" | sudo tee -a /etc/shells >/dev/null; } && chsh -s "$FISH"; then
+    echo "    ✓ fish es ahora tu shell por defecto"
+  else
+    SHELL_HINT="No pude dejar fish como shell por defecto (pide contraseña). Hazlo tú:
+    echo $FISH | sudo tee -a /etc/shells
+    chsh -s $FISH
+  y abre una terminal nueva (o reinicia Ghostty)."
+  fi
 fi
 
 log "Listo ✔  (abre una terminal nueva para usar fish)"
+[ -z "$SHELL_HINT" ] || printf '\n⚠ %s\n' "$SHELL_HINT"
