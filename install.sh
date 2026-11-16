@@ -44,20 +44,15 @@ brew_pkg() { # brew_pkg <formula> [binario]
   if brew list --formula "$1" >/dev/null 2>&1 || have "${2:-$1}"; then skip "$1"; else brew install "$1"; fi
 }
 
-log "nvm"
-if [ -s "$HOME/.nvm/nvm.sh" ] || brew list --formula nvm >/dev/null 2>&1; then skip nvm; else
-  brew install nvm
-  mkdir -p "$HOME/.nvm"
-  grep -q 'NVM_DIR' "$HOME/.zshrc" 2>/dev/null || cat >> "$HOME/.zshrc" <<'EOF'
+log "fish"
+if brew list --formula fish >/dev/null 2>&1; then skip fish; else brew install fish; fi
+FISH="$(brew --prefix)/bin/fish"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$(brew --prefix nvm)/nvm.sh" ] && . "$(brew --prefix nvm)/nvm.sh"
-EOF
+# nvm.fish (vía fisher): nvm-sh es bash y no carga en fish.
+log "nvm (fish)"
+if "$FISH" -c 'functions -q nvm'; then skip nvm; else
+  "$FISH" -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher jorgebucaran/nvm.fish'
 fi
-
-# macOS ya trae /bin/zsh (viejo), así que se revisa brew, no el PATH.
-log "zsh"
-if brew list --formula zsh >/dev/null 2>&1; then skip zsh; else brew install zsh; fi
 
 log "pnpm";    brew_pkg pnpm
 log "ni";      brew_pkg ni
@@ -69,9 +64,12 @@ if [ -d /Applications/Ghostty.app ] || brew list --cask ghostty >/dev/null 2>&1;
 fi
 
 log "Node (nvm)"
-if have node; then skip node; else
-  . "$(brew --prefix nvm)/nvm.sh"; nvm install --lts
+if "$FISH" -c 'command -sq node'; then skip node; else
+  "$FISH" -c 'nvm install lts; set --universal nvm_default_version lts'
 fi
+# Los pasos siguientes (npm, npx) corren en bash: usa el node que ve fish.
+NODE_BIN=$("$FISH" -c 'dirname (command -s node)' 2>/dev/null || true)
+[ -n "$NODE_BIN" ] && export PATH="$NODE_BIN:$PATH"
 
 log "Claude Code"
 if have claude; then skip claude; else curl -fsSL https://claude.ai/install.sh | bash; fi
@@ -97,25 +95,25 @@ log "neovim"; brew_pkg neovim nvim
 
 log "zoxide + eza";  brew_pkg zoxide; brew_pkg eza
 
-log "Shell: cd -> zoxide, ls -> eza"
-# .zshrc solo lo lee el zsh interactivo: los scripts siguen usando cd/ls normales.
-if grep -q '# dev-setup: zoxide/eza' "$HOME/.zshrc" 2>/dev/null; then skip "alias en .zshrc"; else
-  cat >> "$HOME/.zshrc" <<'EOF'
+log "Shell: config de fish"
+# config.fish: el guard is-interactive deja los scripts con cd/ls normales.
+conf="$HOME/.config/fish/config.fish"
+mkdir -p "$(dirname "$conf")"
+if grep -q '# dev-setup' "$conf" 2>/dev/null; then skip "config.fish"; else
+  cat >> "$conf" <<'EOF'
 
-# dev-setup: zoxide/eza
-eval "$(zoxide init zsh --cmd cd)"
-alias ls='eza'
+# dev-setup
+if status is-interactive
+    zoxide init fish --cmd cd | source
+    alias ls eza
+    alias vim nvim
+end
 EOF
 fi
 
 log "Docker"
 if [ -d /Applications/Docker.app ] || brew list --cask docker-desktop >/dev/null 2>&1; then skip docker; else
   brew install --cask docker-desktop
-fi
-
-log "Shell: vim -> nvim"
-if grep -q '# dev-setup: nvim' "$HOME/.zshrc" 2>/dev/null; then skip "alias vim"; else
-  printf "\n# dev-setup: nvim\nalias vim='nvim'\n" >> "$HOME/.zshrc"
 fi
 
 # skills.sh (CLI de Vercel, se corre con npx): solo instala las que falten.
@@ -153,4 +151,10 @@ if cmp -s "$DIR/config/zellij/config.kdl" "$dest" 2>/dev/null; then skip "config
   cp "$DIR/config/zellij/config.kdl" "$dest"
 fi
 
-log "Listo ✔  (abre una terminal nueva para cargar nvm)"
+log "Shell por defecto: fish"
+if [ "$SHELL" = "$FISH" ]; then skip "fish por defecto"; else
+  grep -qx "$FISH" /etc/shells || echo "$FISH" | sudo tee -a /etc/shells >/dev/null
+  chsh -s "$FISH"
+fi
+
+log "Listo ✔  (abre una terminal nueva para usar fish)"
