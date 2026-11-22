@@ -491,7 +491,7 @@ stacked_pane_list_orientation "horizontal"
 // mode_hints_when_bars_hidden false
 keybinds preset="default" primary="Ctrl" secondary="Ctrl Shift" {
 }
-theme "gruber-darker"
+theme "catppuccin-mocha"
 ui {
     pane_frames {
         rounded_corners true
