@@ -180,6 +180,25 @@ if status is-interactive
         echo "zseed: "(count $repos)" repos agregados desde $root"
     end
 
+    # zq: stop every process in every zellij session, but keep the sessions so they can be resumed.
+    # Closing Ghostty or zellij only detaches: the processes keep running. After zq, opening Ghostty
+    # (or `zellij attach <name>`) brings back the tabs, panes, folders and screen contents; commands wait for Enter.
+    function zq --description 'close all zellij sessions, resumable later'
+        type -q zellij; or begin
+            echo "zq: zellij no está instalado (corre ./install.sh)" >&2
+            return 127
+        end
+        # Live sessions only; exited ones are already stopped and stay resumable.
+        set -l live (zellij list-sessions -n 2>/dev/null | string match -v '*EXITED*' | string replace -r ' \[Created.*' '')
+        if test (count $live) -eq 0
+            echo "zq: no hay sesiones activas"
+            return 0
+        end
+        sleep 6 # let zellij save the layout (serialization_interval 5)
+        zellij kill-all-sessions -y
+        echo "zq: "(count $live)" sesión(es) cerradas; reanuda con `zellij attach <nombre>` o abriendo Ghostty"
+    end
+
     # reload: new fish in place of this one, so config.fish and conf.d/* are read again.
     alias reload 'exec fish'
 
@@ -194,7 +213,7 @@ if status is-interactive
     type -q claude; and alias cly 'claude --dangerously-skip-permissions'
 
     # Caps-lock typos: CLY, CD, LS, ZE and ZP run their lowercase versions.
-    for n in cly cd ls ze zp
+    for n in cly cd ls ze zp zq
         type -q $n; and alias (string upper $n) $n
     end
 

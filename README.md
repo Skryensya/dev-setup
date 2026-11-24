@@ -64,6 +64,7 @@ Everything in the menu is on by default unless marked *optional*. The list of id
 | `ghostty` | Ghostty, the terminal, with the Catppuccin Mocha theme (`config/ghostty/config.ghostty`). |
 | `1password` | 1Password. |
 | `chrome` | Google Chrome. |
+| `vlc` | VLC, plays FLV files and almost any other format. |
 | `docker` | Docker Desktop (needed by `ldocker` and the pi `search-browser` extension). |
 | `slack`, `discord`, `teams` | *Optional.* Slack, Discord, Microsoft Teams. |
 
@@ -87,6 +88,7 @@ Defined in `config/fish/conf.d/dev-setup.fish`, interactive sessions only (scrip
 | `cd name` | zoxide: jumps to a folder you visited before. `cd /path` and `cd ..` still work. |
 | `zp [project]` | Opens a project in the zellij `dev` layout. See below. |
 | `zseed [folder]` | Teaches zoxide every repo (anything with `.git`) under a folder (default `$ZP_ROOT` or `~/code`), so `cd name` finds them before you have visited them. |
+| `zq` | Stops every process in every zellij session but keeps the sessions, so you can resume them: closing Ghostty or zellij only detaches and leaves processes running, `zq` actually ends them. Opening Ghostty again (or `zellij attach <name>`) restores tabs, panes, folders and what each terminal showed; commands wait for Enter. |
 | `ls` | eza. |
 | `b file` | bat (`cat` stays the real `cat`). |
 | `vim` | nvim. |
@@ -98,7 +100,7 @@ Defined in `config/fish/conf.d/dev-setup.fish`, interactive sessions only (scrip
 | `Ctrl-T`, `Alt-C` | fzf: pick a file, pick a directory and `cd` into it. |
 | `Ctrl-R`, up arrow | atuin's shell history. |
 
-`lgit` and `ldocker` explain what is missing instead of printing "command not found". Every other optional tool is checked first, so a missing one prints nothing. Caps-lock typos (`CLY`, `CD`, `LS`, `ZE`, `ZP`) run the lowercase command.
+`lgit` and `ldocker` explain what is missing instead of printing "command not found". Every other optional tool is checked first, so a missing one prints nothing. Caps-lock typos (`CLY`, `CD`, `LS`, `ZE`, `ZP`, `ZQ`) run the lowercase command.
 
 ### `zp [project]`
 
@@ -115,7 +117,7 @@ Opens a project in the `dev` layout (`config/zellij/layouts/dev.kdl`, installed 
 installed with Homebrew and becomes the interactive shell:
 
 - `config/fish/conf.d/dev-setup.fish` is copied to `~/.config/fish/conf.d/` (fish loads it by itself). It sets the PATH (Homebrew on Apple Silicon and Intel, `~/.local/bin`, pi, bun, pnpm; no duplicates, missing directories skipped), `EDITOR`/`VISUAL` = nvim when they are unset, and the commands above.
-- In Ghostty the shell opens straight into zellij, reattaching to the newest session (an exited one is resurrected with its tabs, panes and folders; commands wait for Enter). With no sessions it starts a new one. Several windows share that session. Opt out with `DEV_SETUP_NO_ZELLIJ=1` (e.g. in `local.fish`); it is skipped inside zellij.
+- In Ghostty the shell opens straight into zellij, reattaching to the newest session (an exited one is resurrected with its tabs, panes and folders; commands wait for Enter). With no sessions it starts a new one. The config saves the session every 5 seconds with each terminal's contents (`serialization_interval`, `serialize_pane_viewport`), so resuming after `zq` or a reboot is close to where you left off. Shell history is separate: atuin keeps it. Several windows share that session. Opt out with `DEV_SETUP_NO_ZELLIJ=1` (e.g. in `local.fish`); it is skipped inside zellij.
 - Look: Catppuccin Mocha with yellow accents everywhere. zellij uses `catppuccin-mocha-yellow`, defined in its config (the built-in palette with yellow as the active color); fish syntax, pager and prompt colors and fzf (`FZF_DEFAULT_OPTS`: one rounded border, scrollbar, `n/total` counter) use the same palette, shared by `zp`, Ctrl-T and Alt-C. Override either in `local.fish`. Ghostty has the same theme: `theme = Catppuccin Mocha` in `config/ghostty/config.ghostty`, installed to `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty` (the old file is backed up).
 - Put machine-specific or private settings in `~/.config/fish/conf.d/local.fish`. The repo never touches it.
 - Login shell: the script adds Fish to `/etc/shells` only if needed and runs `sudo chsh`. It only tries with a terminal (one password prompt) or passwordless sudo. Otherwise, or if it fails, it prints the exact commands and carries on: the rest of the install never depends on it.

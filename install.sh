@@ -45,6 +45,7 @@ font|1|JetBrains Mono Nerd Font
 #Apps
 ghostty|1|Ghostty
 chrome|1|Google Chrome
+vlc|1|VLC (reproduce FLV y casi todo)
 docker|1|Docker Desktop
 slack|0|Slack
 discord|0|Discord
@@ -324,6 +325,7 @@ log "Shell: config de fish"
 install_file "$DIR/config/fish/conf.d/dev-setup.fish" "$HOME/.config/fish/conf.d/dev-setup.fish"
 
 log "Google Chrome" chrome && cask_app google-chrome "Google Chrome"
+log "VLC" vlc && cask_app vlc VLC
 log "Docker" docker && cask_app docker-desktop Docker
 log "Slack" slack && cask_app slack Slack
 log "Discord" discord && cask_app discord Discord

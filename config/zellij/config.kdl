@@ -514,3 +514,9 @@ ui {
         rounded_corners true
     }
 }
+
+// Resume after zq or a reboot: save the session layout every 5 s (default 60) and keep what each
+// terminal was showing, so a resurrected session is not empty.
+serialization_interval 5
+serialize_pane_viewport true
+scrollback_lines_to_serialize 2000
