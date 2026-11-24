@@ -36,8 +36,10 @@ zellij|1|zellij con mi config
 neovim|1|neovim (vim abre nvim)
 yazi|1|yazi (explorador de archivos)
 gh|1|gh (GitHub CLI)
+1password|1|1Password
+op|1|1Password CLI (op)
 zoxide|1|zoxide + eza
-shell-tools|1|atuin, lazygit, ripgrep, bat
+shell-tools|1|atuin, lazygit, ripgrep, bat, glow
 cli-tools|1|xh, lazydocker, fzf, fd, jq
 font|1|JetBrains Mono Nerd Font
 #Apps
@@ -303,10 +305,12 @@ fi
 fi
 
 log "gh" gh && brew_pkg gh
+log "1Password" 1password && cask_app 1password 1Password
+log "1Password CLI" op && { if brew list --cask 1password-cli >/dev/null 2>&1 || bin_installed op; then skip "1password-cli"; else brew install --cask 1password-cli; fi; }
 log "yazi" yazi && brew_pkg yazi
 log "neovim" neovim && brew_pkg neovim nvim
 log "zoxide + eza" zoxide && { brew_pkg zoxide; brew_pkg eza; }
-log "atuin, lazygit, ripgrep, bat" shell-tools && { brew_pkg atuin; brew_pkg lazygit; brew_pkg ripgrep rg; brew_pkg bat; }
+log "atuin, lazygit, ripgrep, bat, glow" shell-tools && { brew_pkg atuin; brew_pkg lazygit; brew_pkg ripgrep rg; brew_pkg bat; brew_pkg glow; }
 log "xh, lazydocker, fzf, fd, jq" cli-tools && { brew_pkg xh; brew_pkg lazydocker; brew_pkg fzf; brew_pkg fd; brew_pkg jq; }
 
 log "Fuente: JetBrains Mono Nerd Font" font && {
@@ -351,6 +355,7 @@ log "Skills: mattpocock (planificación y git)" skills-matt && skill_add mattpoc
   to-questionnaire wayfinder wizard retro teach wait-what \
   git-guardrails-claude-code setup-pre-commit setup-ts-deep-modules setup-matt-pocock-skills
 
+log "Config de Ghostty (tema Catppuccin Mocha)" ghostty && install_file "$DIR/config/ghostty/config.ghostty" "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
 log "Config de zellij" zellij && install_file "$DIR/config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
 log "Layouts de zellij (zp)" zellij && for f in "$DIR"/config/zellij/layouts/*.kdl; do install_file "$f" "$HOME/.config/zellij/layouts/$(basename "$f")"; done
 log "Preview de zp" zellij && install_file "$DIR/config/zp/preview.sh" "$HOME/.config/zp/preview.sh"

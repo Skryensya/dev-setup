@@ -46,8 +46,8 @@ echo "Configuration"
 check "Zellij layouts exist" bash -c 'ls config/zellij/layouts/*.kdl >/dev/null 2>&1'
 check "install.sh installs Zellij layouts" grep -q "config/zellij/layouts" install.sh
 check "zp preview script exists and install.sh installs it" bash -c 'test -f config/zp/preview.sh && grep -q "config/zp/preview.sh" install.sh'
-check "zellij and fish use the same theme" bash -c 'grep -q "^theme \"catppuccin-mocha\"" config/zellij/config.kdl && grep -q "Catppuccin Mocha" config/fish/conf.d/dev-setup.fish'
-check "zp and reload are defined" bash -c 'grep -q "function zp " config/fish/conf.d/dev-setup.fish && grep -q "alias reload " config/fish/conf.d/dev-setup.fish'
+check "zellij and fish use the same theme" bash -c 'grep -q "^theme \"catppuccin-mocha-yellow\"" config/zellij/config.kdl && grep -q "Catppuccin Mocha, yellow accents" config/fish/conf.d/dev-setup.fish'
+check "zp and reload are defined" bash -c 'grep -q "function zp " config/fish/conf.d/dev-setup.fish && grep -q "function zseed " config/fish/conf.d/dev-setup.fish && grep -q "alias reload " config/fish/conf.d/dev-setup.fish'
 check "cat is not aliased" bash -c '! grep -q "alias cat " config/fish/conf.d/dev-setup.fish'
 check "bat is available as b" grep -q 'alias b bat' config/fish/conf.d/dev-setup.fish
 check "only DEV_SETUP_SKIP_SHELL=1 skips the shell" grep -q 'DEV_SETUP_SKIP_SHELL:-}" = 1' install.sh

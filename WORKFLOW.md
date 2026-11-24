@@ -11,7 +11,7 @@ Open Ghostty. It starts fish (the login shell), which loads the PATH, the aliase
 ze                # zellij: panes, tabs and sessions in one terminal
 ```
 
-Zellij uses the default keybindings and the `catppuccin-mocha` theme from `config/zellij/config.kdl`, plus the layouts in `config/zellij/layouts/` (open a project with `zp`). Keep one session per project and detach instead of closing it.
+Zellij uses the default keybindings and the `catppuccin-mocha-yellow` theme (Catppuccin Mocha with yellow accents, defined in the same file) from `config/zellij/config.kdl`, plus the layouts in `config/zellij/layouts/` (open a project with `zp`). Keep one session per project and detach instead of closing it.
 
 ## 2. Move around and read
 

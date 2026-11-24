@@ -17,20 +17,20 @@ end
 
 # Interactive only: scripts keep the normal cd and ls.
 if status is-interactive
-    # Theme: Catppuccin Mocha (same as zellij and fzf). Global, so it follows this file; override
+    # Theme: Catppuccin Mocha, yellow accents (same as zellij and fzf). Global, so it follows this file; override
     # in local.fish.
     set -g fish_color_normal cdd6f4
-    set -g fish_color_command 89b4fa
-    set -g fish_color_param f2cdcd
-    set -g fish_color_keyword f38ba8
+    set -g fish_color_command f9e2af
+    set -g fish_color_param f5e0dc
+    set -g fish_color_keyword fab387
     set -g fish_color_quote a6e3a1
-    set -g fish_color_redirection f5c2e7
+    set -g fish_color_redirection fab387
     set -g fish_color_end fab387
     set -g fish_color_error f38ba8
     set -g fish_color_option a6e3a1
     set -g fish_color_comment 7f849c
-    set -g fish_color_operator f5c2e7
-    set -g fish_color_escape f2cdcd
+    set -g fish_color_operator fab387
+    set -g fish_color_escape fab387
     set -g fish_color_autosuggestion 6c7086
     set -g fish_color_valid_path --underline
     set -g fish_color_selection --background=313244
@@ -39,12 +39,12 @@ if status is-interactive
     set -g fish_color_cancel f38ba8
     set -g fish_color_cwd f9e2af
     set -g fish_color_cwd_root f38ba8
-    set -g fish_color_user 94e2d5
-    set -g fish_color_host 89b4fa
+    set -g fish_color_user fab387
+    set -g fish_color_host f9e2af
     set -g fish_color_host_remote a6e3a1
     set -g fish_color_status f38ba8
     set -g fish_pager_color_progress 6c7086
-    set -g fish_pager_color_prefix f5c2e7 --bold
+    set -g fish_pager_color_prefix f9e2af --bold
     set -g fish_pager_color_completion cdd6f4
     set -g fish_pager_color_description 6c7086
     set -g fish_pager_color_selected_background --background=313244
@@ -61,14 +61,14 @@ if status is-interactive
             set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --exclude .git'
             set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
         end
-        # Look: Catppuccin Mocha colors (transparent background), one rounded border, scrollbar and
+        # Look: Catppuccin Mocha colors with yellow accents (transparent background), one rounded border, scrollbar and
         # an n/total counter so it is clear when more items are below. Later conf.d files
         # (local.fish) can override it.
         set -gx FZF_DEFAULT_OPTS --layout=reverse --border=rounded --scrollbar=▐ --info=inline-right \
             --pointer=▌ --marker=✓ "--prompt='❯ '" --highlight-line --padding=0,1 \
-            --color=bg:-1,bg+:#313244,fg:#cdd6f4,fg+:#cdd6f4,hl:#f38ba8,hl+:#f38ba8,gutter:-1 \
-            --color=info:#cba6f7,prompt:#cba6f7,pointer:#f5e0dc,marker:#b4befe,spinner:#f5e0dc \
-            --color=border:#6c7086,label:#cdd6f4,scrollbar:#6c7086,header:#f38ba8,query:#cdd6f4
+            --color=bg:-1,bg+:#313244,fg:#cdd6f4,fg+:#cdd6f4,hl:#f9e2af,hl+:#f9e2af,gutter:-1 \
+            --color=info:#fab387,prompt:#f9e2af,pointer:#f9e2af,marker:#fab387,spinner:#f9e2af \
+            --color=border:#6c7086,label:#cdd6f4,scrollbar:#6c7086,header:#fab387,query:#cdd6f4
         fzf --fish | source
     end
     type -q atuin; and atuin init fish | source
@@ -94,42 +94,22 @@ if status is-interactive
         lazydocker $argv
     end
 
-    # zp [layout] [project]: open a project in a zellij layout (config/zellij/layouts/*.kdl).
-    # Without a project, fzf lists ~/code/*/* (root: $ZP_ROOT). Inside zellij it adds a tab,
-    # outside it starts a new session. Arguments can come in any order.
-    function zp --description 'open a project in a zellij layout'
+    # zp [project]: open a project in the zellij "dev" layout (config/zellij/layouts/dev.kdl).
+    # Without a project, fzf lists the repos under ~/code (root: $ZP_ROOT). A name that is not a
+    # folder is looked up in zoxide. Inside zellij it adds a tab, outside it starts a new session.
+    function zp --description 'open a project in the zellij dev layout'
         set -l root (set -q ZP_ROOT; and echo $ZP_ROOT; or echo ~/code)
+        set -l layout dev
         set -l ldir ~/.config/zellij/layouts
         type -q zellij; or begin
             echo "zp: zellij no está instalado (corre ./install.sh)" >&2
             return 127
         end
-        set -l layout
-        set -l dir
-        for a in $argv
-            if test -f $ldir/$a.kdl
-                set layout $a
-            else
-                set dir $a
-            end
+        test -f $ldir/$layout.kdl; or begin
+            echo "zp: falta el layout $ldir/$layout.kdl (corre ./install.sh)" >&2
+            return 1
         end
-        if test -z "$layout"
-            set -l all (path change-extension "" $ldir/*.kdl 2>/dev/null | path basename)
-            test (count $all) -gt 0; or begin
-                echo "zp: no hay layouts en $ldir (corre ./install.sh)" >&2
-                return 1
-            end
-            if test (count $all) -eq 1
-                set layout $all
-            else
-                type -q fzf; or begin
-                    echo "zp: fzf no está instalado (corre ./install.sh)" >&2
-                    return 127
-                end
-                set layout (printf '%s\n' $all | fzf --height 40% --border-label ' layout ')
-                test -n "$layout"; or return 1
-            end
-        end
+        set -l dir $argv[1]
         if test -z "$dir"
             type -q fzf; or begin
                 echo "zp: fzf no está instalado (corre ./install.sh)" >&2
@@ -170,6 +150,8 @@ if status is-interactive
             end
         end
         set dir (path resolve $dir)
+        # Shells that start inside $dir never fire zoxide's cd hook, so teach it the project here.
+        type -q zoxide; and zoxide add $dir
         if set -q ZELLIJ
             zellij action new-tab --layout $ldir/$layout.kdl --cwd $dir --name (path basename $dir)
         else
@@ -178,6 +160,24 @@ if status is-interactive
             string replace -r 'tab name="[^"]*"' 'tab name="'(path basename $dir)'"' <$ldir/$layout.kdl >$tmp
             cd $dir; and exec zellij --layout $tmp
         end
+    end
+
+    # zseed [folder]: teach zoxide every repo (anything with .git) under folder (default $ZP_ROOT or ~/code).
+    function zseed --description 'add every repo under a folder to zoxide'
+        type -q zoxide; or begin
+            echo "zseed: zoxide no está instalado (corre ./install.sh)" >&2
+            return 127
+        end
+        set -l root (path resolve (set -q argv[1]; and echo $argv[1]; or set -q ZP_ROOT; and echo $ZP_ROOT; or echo ~/code))
+        test -d $root; or begin
+            echo "zseed: $root no es una carpeta" >&2
+            return 1
+        end
+        set -l repos (find $root -maxdepth 7 -name node_modules -prune -o -name .git -print 2>/dev/null | string replace -r '/\.git$' '')
+        for r in $repos
+            zoxide add $r
+        end
+        echo "zseed: "(count $repos)" repos agregados desde $root"
     end
 
     # reload: new fish in place of this one, so config.fish and conf.d/* are read again.
@@ -192,6 +192,11 @@ if status is-interactive
 
     # UNSAFE: Claude Code with no permission prompts (see README, Security).
     type -q claude; and alias cly 'claude --dangerously-skip-permissions'
+
+    # Caps-lock typos: CLY, CD, LS, ZE and ZP run their lowercase versions.
+    for n in cly cd ls ze zp
+        type -q $n; and alias (string upper $n) $n
+    end
 
     # Ghostty opens straight into zellij, reattaching to the newest session (live, or an exited one
     # that zellij resurrects with its tabs and panes); a new session only if none exist.

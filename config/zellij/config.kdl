@@ -491,7 +491,24 @@ stacked_pane_list_orientation "horizontal"
 // mode_hints_when_bars_hidden false
 keybinds preset="default" primary="Ctrl" secondary="Ctrl Shift" {
 }
-theme "catppuccin-mocha"
+// Catppuccin Mocha with yellow accents: the built-in palette, but "green" (active ribbon,
+// focused frame) is Catppuccin yellow, so the UI matches fish and fzf.
+themes {
+    catppuccin-mocha-yellow {
+        fg "#cdd6f4"
+        bg "#585b70"
+        black "#181825"
+        red "#f38ba8"
+        green "#f9e2af"
+        yellow "#f9e2af"
+        blue "#fab387"
+        magenta "#f5c2e7"
+        cyan "#89dceb"
+        white "#bac2de"
+        orange "#fab387"
+    }
+}
+theme "catppuccin-mocha-yellow"
 ui {
     pane_frames {
         rounded_corners true
