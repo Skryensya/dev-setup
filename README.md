@@ -55,6 +55,7 @@ Everything in the menu is on by default unless marked *optional*. The list of id
 | `zoxide` | zoxide, eza | `cd` that learns the folders you visit; `ls` with icons and colors. |
 | `shell-tools` | atuin, lazygit, ripgrep, bat, glow | Searchable shell history; git TUI; fast grep; `cat` with highlighting; Markdown reader. |
 | `cli-tools` | xh, lazydocker, fzf, fd, jq | HTTP client; Docker TUI; fuzzy finder; fast `find`; JSON processor. |
+| `rymus` | [rymus](https://github.com/Skryensya/rymus), mpv, yt-dlp, ffmpeg | *Optional.* My YouTube Music player in the terminal. The latest release goes to `~/.local/bin` and is updated on each run (Apple Silicon only). A `rymus` installed some other way, like a local build, is left alone. |
 | `font` | JetBrains Mono Nerd Font | Font with the icons that `zp`, eza and the prompt use. |
 
 **Apps**

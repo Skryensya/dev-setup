@@ -41,6 +41,7 @@ op|1|1Password CLI (op)
 zoxide|1|zoxide + eza
 shell-tools|1|atuin, lazygit, ripgrep, bat, glow
 cli-tools|1|xh, lazydocker, fzf, fd, jq
+rymus|0|rymus (YouTube Music en la terminal)
 font|1|JetBrains Mono Nerd Font
 #Apps
 ghostty|1|Ghostty
@@ -244,6 +245,26 @@ bin_installed() {
   p=$(command -v "$1") || return 1
   case $p in /usr/bin/*|/bin/*|/usr/sbin/*|/sbin/*) return 1 ;; esac
 }
+# rymus: último release de GitHub en ~/.local/bin. Un rymus de otro origen (p. ej. un build local) no se toca.
+install_rymus() {
+  local bin="$HOME/.local/bin/rymus" other url tag name tmp
+  other=$(command -v rymus || true)
+  if [ -n "$other" ] && [ "$other" != "$bin" ]; then skip "rymus ($other)"; return; fi
+  if [ "$(uname -m)" != arm64 ]; then warn "rymus solo publica binario para Apple Silicon; omitido"; return; fi
+  url=$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/Skryensya/rymus/releases/latest) || die "no pude consultar el último release de rymus"
+  tag=${url##*/}
+  if [ -x "$bin" ] && [ "$("$bin" --version)" = "rymus ${tag#v}" ]; then skip "rymus $tag"; return; fi
+  name="rymus-$tag-aarch64-apple-darwin"
+  url="https://github.com/Skryensya/rymus/releases/download/$tag/$name.tar.gz"
+  tmp=$(mktemp -d)
+  curl -fsSL -o "$tmp/$name.tar.gz" "$url" && curl -fsSL -o "$tmp/sum" "$url.sha256" || die "no pude descargar rymus $tag"
+  (cd "$tmp" && shasum -a 256 -c sum >/dev/null) || die "el checksum de rymus $tag no coincide"
+  tar -xzf "$tmp/$name.tar.gz" -C "$tmp"
+  mkdir -p "$HOME/.local/bin"
+  install -m 755 "$tmp/$name/rymus" "$bin"
+  rm -rf "$tmp"
+  okay "rymus $tag"
+}
 brew_pkg() { # brew_pkg <formula> [binario]
   if brew list --formula "$1" >/dev/null 2>&1 || bin_installed "${2:-$1}"; then skip "$1"; else brew install "$1"; fi
 }
@@ -314,6 +335,7 @@ log "zoxide + eza" zoxide && { brew_pkg zoxide; brew_pkg eza; }
 log "atuin, lazygit, ripgrep, bat, glow" shell-tools && { brew_pkg atuin; brew_pkg lazygit; brew_pkg ripgrep rg; brew_pkg bat; brew_pkg glow; }
 log "xh, lazydocker, fzf, fd, jq" cli-tools && { brew_pkg xh; brew_pkg lazydocker; brew_pkg fzf; brew_pkg fd; brew_pkg jq; }
 
+log "rymus" rymus && { brew_pkg mpv; brew_pkg yt-dlp; brew_pkg ffmpeg; install_rymus; }
 log "Fuente: JetBrains Mono Nerd Font" font && {
   if brew list --cask font-jetbrains-mono-nerd-font >/dev/null 2>&1; then skip "nerd font"; else
     brew install --cask font-jetbrains-mono-nerd-font
